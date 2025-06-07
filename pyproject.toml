@@ -12,6 +12,7 @@ dependencies = [
     "dropbox>=12.0.2",
     "phonenumbers>=9.0.6",
     "pillow>=11.2.1",
+    "pre-commit>=4.2.0",
     "whitenoise>=6.9.0",
 ]
 
