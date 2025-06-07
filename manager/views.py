@@ -233,7 +233,7 @@ class MonthlyAccountancy(LoginRequiredMixin, generic.ListView):
     paginate_by = 10
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(MonthlyAccountancy, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         IO_type = self.request.GET.get("IO_type", "")
         context["search_form"] = AccountancySearchForm(initial={"IO_type": IO_type})
 
