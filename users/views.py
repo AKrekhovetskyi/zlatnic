@@ -9,7 +9,7 @@ from users.forms import NewUserForm, UserAccountForm
 
 
 def register_request(request):
-    """User registration function-based view"""
+    """User registration function-based view."""
     if request.method == "POST":
         form = NewUserForm(request.POST)
         if form.is_valid():
