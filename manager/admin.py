@@ -1,11 +1,12 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
+
 from manager.models import (
-    Currency,
+    Accountancy,
     Card,
     Cash,
     Cryptocurrency,
-    Accountancy,
+    Currency,
 )
 
 admin.site.register(Currency, ModelAdmin)

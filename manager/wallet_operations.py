@@ -1,13 +1,16 @@
 from datetime import date
 
 from django.core.exceptions import ValidationError
-from django.db.models import Q, Model, Sum
+from django.db.models import Model, Q, Sum
 
-from manager.models import Card, Cash, Cryptocurrency, Accountancy
+from manager.models import Accountancy, Card, Cash, Cryptocurrency
 
 
 def wallet_data_parse(request: dict) -> tuple[str, int]:
-    wallet_type, integer, = request["wallet_choice"].split(" - ")
+    (
+        wallet_type,
+        integer,
+    ) = request["wallet_choice"].split(" - ")
 
     return wallet_type, integer
 
@@ -38,13 +41,11 @@ def monthly_financial_turnover(q_filter: Q, turnover_type: str):
 
 
 def change_wallet_balance(expense: str, wallet_obj: Model, amount: float) -> Model:
-    if expense in ("Outcome", "O",) and wallet_obj.balance < amount:
-        raise ValidationError(
-            "There's too small amount of money on the balance"
-        )
-    elif expense in ("Outcome", "O",):
+    if expense in ("Outcome", "O") and wallet_obj.balance < amount:
+        raise ValidationError("There's too small amount of money on the balance")
+    if expense in ("Outcome", "O"):
         wallet_obj.balance = float(wallet_obj.balance) - amount
-    elif expense in ("Income", "I",):
+    elif expense in ("Income", "I"):
         wallet_obj.balance = float(wallet_obj.balance) + amount
 
     return wallet_obj

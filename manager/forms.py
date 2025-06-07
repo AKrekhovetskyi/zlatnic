@@ -2,11 +2,10 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from manager.models import Accountancy
-from manager.wallet_operations import wallet_choice, wallet_data_parse, change_wallet_balance
+from manager.wallet_operations import change_wallet_balance, wallet_choice, wallet_data_parse
 
 
 class AccountancyForm(forms.ModelForm):
-
     class Meta:
         model = Accountancy
         fields = ()
@@ -18,14 +17,11 @@ class AccountancyForm(forms.ModelForm):
 
         wallet_type, previous_amount = wallet_data_parse(self.data)
         _, self.wallet_obj = wallet_choice(
-            wallet_type,
-            self.instance.card_id or self.instance.cash_id or self.instance.cryptocurrency_id
+            wallet_type, self.instance.card_id or self.instance.cash_id or self.instance.cryptocurrency_id
         )
         amount = amount - float(previous_amount) if previous_amount else 0
 
-        self.wallet_obj = change_wallet_balance(
-            self.instance.IO, self.wallet_obj, amount
-        )
+        self.wallet_obj = change_wallet_balance(self.instance.IO, self.wallet_obj, amount)
 
         return super().clean()
 
@@ -44,8 +40,7 @@ class AccountancySearchForm(forms.Form):
         max_length=50,
         required=False,
         label="",
-        widget=forms.TextInput(attrs={
-            "placeholder": "Search by type ...",
-            "class": "small_plate _comforta_bold text_shadow"
-        })
+        widget=forms.TextInput(
+            attrs={"placeholder": "Search by type ...", "class": "small_plate _comforta_bold text_shadow"}
+        ),
     )

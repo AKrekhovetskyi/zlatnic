@@ -3,7 +3,6 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
 
 
@@ -17,19 +16,11 @@ class Currency(models.Model):
 
 
 class Card(models.Model):
-    user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        related_name="cards"
-    )
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="cards")
     bank_name = models.CharField(max_length=50)
     type = models.CharField(max_length=50)
     balance = models.FloatField(default=0.0)
-    currency = models.ForeignKey(
-        Currency,
-        on_delete=models.RESTRICT,
-        related_name="cards"
-    )
+    currency = models.ForeignKey(Currency, on_delete=models.RESTRICT, related_name="cards")
 
     def save(self, *args, **kwargs):
         self.balance = round(self.balance, 2)
@@ -38,32 +29,17 @@ class Card(models.Model):
     class Meta:
         ordering = ["bank_name"]
         constraints = [
-            models.UniqueConstraint(
-                fields=("user", "bank_name", "type",),
-                name="unique_user_cards"
-            ),
-            models.CheckConstraint(
-                check=(Q(balance__gte=0)),
-                name="positive_card_balance"
-            )
+            models.UniqueConstraint(fields=("user", "bank_name", "type"), name="unique_user_cards"),
+            models.CheckConstraint(check=(Q(balance__gte=0)), name="positive_card_balance"),
         ]
 
     def __str__(self):
-        return f"Card: {self.bank_name} - {self.type} - "\
-               f"{self.balance} {self.currency.sign}"
+        return f"Card: {self.bank_name} - {self.type} - {self.balance} {self.currency.sign}"
 
 
 class Cash(models.Model):
-    user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        related_name="cash"
-    )
-    currency = models.ForeignKey(
-        Currency,
-        on_delete=models.RESTRICT,
-        related_name="cash"
-    )
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="cash")
+    currency = models.ForeignKey(Currency, on_delete=models.RESTRICT, related_name="cash")
     balance = models.FloatField(default=0.0)
 
     def save(self, *args, **kwargs):
@@ -74,45 +50,24 @@ class Cash(models.Model):
         verbose_name = "cash"
         verbose_name_plural = "cash"
         constraints = [
-            models.UniqueConstraint(
-                fields=("user", "currency",),
-                name="unique_user_cash"
-            ),
-            models.CheckConstraint(
-                check=(Q(balance__gte=0)),
-                name="positive_cash_balance"
-            )
+            models.UniqueConstraint(fields=("user", "currency"), name="unique_user_cash"),
+            models.CheckConstraint(check=(Q(balance__gte=0)), name="positive_cash_balance"),
         ]
 
     def __str__(self) -> str:
-        return f"Cash - {self.balance} {self.currency.sign} "\
-               f"({self.currency.abbreviation})"
+        return f"Cash - {self.balance} {self.currency.sign} ({self.currency.abbreviation})"
 
 
 class Cryptocurrency(models.Model):
-    user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        related_name="cryptocurrencies"
-    )
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="cryptocurrencies")
     name = models.CharField(max_length=50)
-    balance = models.DecimalField(
-        max_digits=20,
-        decimal_places=8,
-        default=Decimal(0.0)
-    )
+    balance = models.DecimalField(max_digits=20, decimal_places=8, default=Decimal(0.0))
 
     class Meta:
         ordering = ["name"]
         constraints = [
-            models.UniqueConstraint(
-                fields=("user", "name",),
-                name="unique_user_cryptocurrencies"
-            ),
-            models.CheckConstraint(
-                check=(Q(balance__gte=0)),
-                name="positive_cryptocurrency_balance"
-            )
+            models.UniqueConstraint(fields=("user", "name"), name="unique_user_cryptocurrencies"),
+            models.CheckConstraint(check=(Q(balance__gte=0)), name="positive_cryptocurrency_balance"),
         ]
 
     def __str__(self) -> str:
@@ -128,32 +83,12 @@ class Accountancy(models.Model):
     ]
     RELATED_NAME = "accountancy"
 
-    card = models.ForeignKey(
-        Card,
-        on_delete=models.CASCADE,
-        related_name=RELATED_NAME,
-        null=True,
-        blank=True
-    )
-    cash = models.ForeignKey(
-        Cash,
-        on_delete=models.CASCADE,
-        related_name=RELATED_NAME,
-        null=True,
-        blank=True
-    )
+    card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name=RELATED_NAME, null=True, blank=True)
+    cash = models.ForeignKey(Cash, on_delete=models.CASCADE, related_name=RELATED_NAME, null=True, blank=True)
     cryptocurrency = models.ForeignKey(
-        Cryptocurrency,
-        on_delete=models.CASCADE,
-        related_name=RELATED_NAME,
-        null=True,
-        blank=True
+        Cryptocurrency, on_delete=models.CASCADE, related_name=RELATED_NAME, null=True, blank=True
     )
-    IO = models.CharField(
-        max_length=1,
-        choices=IN_OUT_COME,
-        default=OUTCOME
-    )
+    IO = models.CharField(max_length=1, choices=IN_OUT_COME, default=OUTCOME)
     IO_type = models.CharField(max_length=50)
     amount = models.FloatField()
     datetime = models.DateTimeField(auto_now_add=True)
@@ -168,23 +103,10 @@ class Accountancy(models.Model):
         ordering = ["-datetime"]
         constraints = [
             models.CheckConstraint(
-                check=(
-                    Q(card__isnull=False) &
-                    Q(cash__isnull=True) &
-                    Q(cryptocurrency__isnull=True)
-                ) | (
-                    Q(card__isnull=True) &
-                    Q(cash__isnull=False) &
-                    Q(cryptocurrency__isnull=True)
-                ) | (
-                    Q(card__isnull=True) &
-                    Q(cash__isnull=True) &
-                    Q(cryptocurrency__isnull=False)
-                ),
-                name="only_one_wallet"
+                check=(Q(card__isnull=False) & Q(cash__isnull=True) & Q(cryptocurrency__isnull=True))
+                | (Q(card__isnull=True) & Q(cash__isnull=False) & Q(cryptocurrency__isnull=True))
+                | (Q(card__isnull=True) & Q(cash__isnull=True) & Q(cryptocurrency__isnull=False)),
+                name="only_one_wallet",
             ),
-            models.CheckConstraint(
-                check=(Q(amount__gte=0)),
-                name="positive_amount"
-            )
+            models.CheckConstraint(check=(Q(amount__gte=0)), name="positive_amount"),
         ]
