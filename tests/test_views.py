@@ -6,17 +6,15 @@ from django.test import TestCase
 from django.urls import reverse
 
 from manager.models import (
-    Currency,
+    Accountancy,
     Card,
     Cash,
     Cryptocurrency,
-    Accountancy,
+    Currency,
 )
-
 
 WALLETS_URL = reverse("manager:wallets")
 INDEX_URL = reverse("manager:index")
-ACCOUNT_URL = reverse("manager:account")
 ACCOUNTANCY_URL = reverse("manager:monthly-accountancy-list")
 MONTHLY_ACCOUNTANCY_URL = reverse(
     "manager:monthly-accountancy",
@@ -36,10 +34,6 @@ class PublicViewsTests(TestCase):
 
     def test_index_login_required(self):
         response = self.client.get(INDEX_URL)
-        self.assertNotEqual(response.status_code, 200)
-
-    def test_account_login_required(self):
-        response = self.client.get(ACCOUNT_URL)
         self.assertNotEqual(response.status_code, 200)
 
     def test_accountancy_login_required(self):
