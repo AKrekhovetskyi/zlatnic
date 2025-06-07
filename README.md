@@ -1,6 +1,7 @@
 <img src="static/source/welcome_logo.png" alt="Project logo" width="200">
 
 # ZLATNIC
+
 ZLATNIC - a platform to control personal expenses.
 
 ## Check it out
@@ -31,10 +32,8 @@ python3 manage.py surserver   # start Django server
 
 ## Features
 
-* Registration and authentication functionality for User
-* Managing different types of wallets
-* Functionality of accrual and expenditure of funds
-* Monthly and monthly detailed history of financial circulation
-* Powerful admin panel for advanced managing
-
-
+- Registration and authentication functionality for User
+- Managing different types of wallets
+- Functionality of accrual and expenditure of funds
+- Monthly and monthly detailed history of financial circulation
+- Powerful admin panel for advanced managing

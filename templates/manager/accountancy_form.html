@@ -17,14 +17,14 @@
           {{ form.non_field_errors }}
         </div>
       {% endif %}
-      
+
       {% csrf_token %}
       <label for="id_amount" class="_marmalade_small text_shadow">Amount:</label>
-      <input type="number" 
+      <input type="number"
               name="amount"
               value="{{ accountancy.amount }}"
               step="0.00000001"
-              required="" 
+              required=""
               id="id_amount"
               class="small_plate _comforta_bold text_shadow">
       <input type="hidden"
