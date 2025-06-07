@@ -1,23 +1,22 @@
 from django.urls import path
 
 from .views import (
-    CardCreateView,
-    CardUpdateView,
-    CardDeleteView,
-    CashCreateView,
-    CashUpdateView,
-    CashDeleteView,
-    CryptoCreateView,
-    CryptoUpdateView,
-    CryptoDeleteView,
-    wallets,
-    index,
-    MonthlyAccountancyList,
-    MonthlyAccountancy,
-    AccountancyUpdate,
     AccountancyDelete,
+    AccountancyUpdate,
+    CardCreateView,
+    CardDeleteView,
+    CardUpdateView,
+    CashCreateView,
+    CashDeleteView,
+    CashUpdateView,
+    CryptoCreateView,
+    CryptoDeleteView,
+    CryptoUpdateView,
+    MonthlyAccountancy,
+    MonthlyAccountancyList,
+    index,
+    wallets,
 )
-
 
 urlpatterns = [
     path("wallets/", wallets, name="wallets"),

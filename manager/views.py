@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.db.models import Q, Sum
-from django.db.models.functions import TruncMonth, Round
+from django.db.models.functions import Round, TruncMonth
 from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -11,12 +11,12 @@ from manager.forms import (
     AccountancyForm,
     AccountancySearchForm,
 )
-from manager.models import Card, Cash, Cryptocurrency, Accountancy
+from manager.models import Accountancy, Card, Cash, Cryptocurrency
 from manager.wallet_operations import (
-    wallet_choice,
-    monthly_financial_turnover,
-    wallet_data_parse,
     change_wallet_balance,
+    monthly_financial_turnover,
+    wallet_choice,
+    wallet_data_parse,
 )
 
 
@@ -118,7 +118,6 @@ class CryptoDeleteView(LoginRequiredMixin, generic.DeleteView):
 @login_required
 def index(request):
     """Function-based view for the base page of the site."""
-
     wallets_set = []
     error = False
     current_balance = income = outcome = 0
@@ -139,14 +138,11 @@ def index(request):
             wallets_set.append([f"crypto - {crypto.id}", crypto])
 
     # Check whether POST includes any wallet data to process
-    if "wallet_choice" in request.POST and request.POST["wallet_choice"]:
+    if request.POST.get("wallet_choice"):
         wallet_type, wallet_id = wallet_data_parse(request.POST)
         q_filter, wallet_obj = wallet_choice(wallet_type, wallet_id)
 
-        if (
-            "Outcome" in request.POST or request.POST["Income"] != "none"
-        ) and request.POST["amount"]:
-
+        if ("Outcome" in request.POST or request.POST["Income"] != "none") and request.POST["amount"]:
             amount = float(request.POST["amount"])
             expense = "Outcome" if "Outcome" in request.POST else "Income"
 
@@ -204,11 +200,7 @@ class MonthlyAccountancyList(LoginRequiredMixin, generic.ListView):
 
         # Get month expenses
         self.queryset = (
-            self.model.objects.filter(
-                Q(card__user=user_id)
-                | Q(cash__user=user_id)
-                | Q(cryptocurrency__user=user_id)
-            )
+            self.model.objects.filter(Q(card__user=user_id) | Q(cash__user=user_id) | Q(cryptocurrency__user=user_id))
             .annotate(
                 month=TruncMonth("datetime"),
             )
@@ -254,9 +246,7 @@ class MonthlyAccountancy(LoginRequiredMixin, generic.ListView):
         # Get accountancy per specific month & year
         self.queryset = (
             self.model.objects.filter(
-                q_filter
-                & Q(datetime__month=details["month"])
-                & Q(datetime__year=details["year"])
+                q_filter & Q(datetime__month=details["month"]) & Q(datetime__year=details["year"])
             )
             .order_by("-datetime")
             .values("id", "IO", "IO_type", "amount", "datetime")

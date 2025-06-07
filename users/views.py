@@ -1,5 +1,5 @@
-from django.contrib.auth import login, get_user_model
 from django.contrib import messages
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -10,7 +10,6 @@ from users.forms import NewUserForm, UserAccountForm
 
 def register_request(request):
     """User registration function-based view"""
-
     if request.method == "POST":
         form = NewUserForm(request.POST)
         if form.is_valid():

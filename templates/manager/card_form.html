@@ -13,7 +13,7 @@
             {{ form.non_field_errors }}
           </div>
         {% endif %}
-        
+
         {% csrf_token %}
         <input type="hidden" name="user" value="{{ user.id }}">
         <input type="hidden" name="balance" value="0.0" step="any" required="" id="id_balance">
@@ -43,7 +43,7 @@
         <input type="submit" value="Submit" class="button orange_background text_shadow">
         <a href="{% url 'manager:wallets' %}" class="button orange_background text_shadow">Cancel</a>
       </form>
-{% comment %} 
+{% comment %}
       <form action="" method="POST">
         {% csrf_token %}
         {{ form }}
