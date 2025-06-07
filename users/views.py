@@ -27,7 +27,7 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     success_url = reverse_lazy("manager:index")
 
     def get_form_kwargs(self):
-        kwargs = super(UserUpdateView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs["files"] = self.request.FILES
 
         return kwargs

@@ -24,7 +24,7 @@ class Card(models.Model):
 
     def save(self, *args, **kwargs):
         self.balance = round(self.balance, 2)
-        return super(Card, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     class Meta:
         ordering = ["bank_name"]
@@ -44,7 +44,7 @@ class Cash(models.Model):
 
     def save(self, *args, **kwargs):
         self.balance = round(self.balance, 2)
-        return super(Cash, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "cash"

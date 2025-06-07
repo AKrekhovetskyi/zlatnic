@@ -26,7 +26,7 @@ class AccountancyForm(forms.ModelForm):
         return super().clean()
 
     def save(self, commit=True):
-        accountancy = super(AccountancyForm, self).save(commit=False)
+        accountancy = super().save(commit=False)
         self.clean()
         if commit:
             accountancy.amount = float(self.data["amount"])
