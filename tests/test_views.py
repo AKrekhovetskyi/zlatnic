@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.test import TestCase
 from django.urls import reverse
+from faker import Faker
 
 from manager.models import (
     Accountancy,
@@ -19,6 +20,8 @@ ACCOUNTANCY_URL = reverse("manager:monthly-accountancy-list")
 MONTHLY_ACCOUNTANCY_URL = reverse(
     "manager:monthly-accountancy", kwargs={"wallet": "card", "wallet_id": 1, "month": 11, "year": 2022}
 )
+
+fake = Faker()
 
 
 class PublicViewsTests(TestCase):
@@ -38,7 +41,7 @@ class PublicViewsTests(TestCase):
 class PrivateViewsTests(TestCase):
     def setUp(self) -> None:
         self.user = get_user_model().objects.create_user(  # type: ignore
-            username="test", password="test1234"
+            username=fake.pystr(), password=fake.pystr()
         )
         self.client.force_login(self.user)
 

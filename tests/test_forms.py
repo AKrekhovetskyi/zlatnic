@@ -3,13 +3,16 @@ from datetime import UTC, datetime
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from faker import Faker
 
 from manager.models import Accountancy, Card, Currency
+
+fake = Faker()
 
 
 class FormTests(TestCase):
     def setUp(self) -> None:
-        self.user = get_user_model().objects.create_user(username="test.user", password="testpass1234")
+        self.user = get_user_model().objects.create_user(username=fake.pystr(), password=fake.pystr())
         self.client.force_login(self.user)
 
         self.currency = Currency.objects.create(name="U. S. Dollar", abbreviation="USD", sign="$")
@@ -40,10 +43,7 @@ class FormTests(TestCase):
 
 class SearchFormTests(TestCase):
     def setUp(self) -> None:
-        self.user = get_user_model().objects.create_user(
-            username="test_username",
-            password="testpass1234",
-        )
+        self.user = get_user_model().objects.create_user(username=fake.pystr(), password=fake.pystr())
         self.client.force_login(self.user)
 
         self.currency = Currency.objects.create(name="U. S. Dollar", abbreviation="USD", sign="$")
