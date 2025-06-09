@@ -21,11 +21,10 @@ class NewUserForm(UserCreationForm):
             "image",
         )
 
-    def save(self, *, commit: bool = True) -> Any:
+    def save(self, *, commit: bool = True) -> Any:  # type: ignore[BaseUserCreationForm]
         user = super().save(commit=False)
         user.email = self.cleaned_data["email"]
-        if commit:
-            user.save()
+        user.save(commit)
         return user
 
 
