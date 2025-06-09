@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -50,8 +50,12 @@ class SearchFormTests(TestCase):
         self.card = Card.objects.create(
             user=self.user, bank_name="Mono", type="Payment card", balance=150, currency=self.currency
         )
-        Accountancy.objects.create(card=self.card, IO="O", IO_type="Home", amount=15, datetime=datetime(2022, 12, 1))
-        Accountancy.objects.create(card=self.card, IO="O", IO_type="Pets", amount=8, datetime=datetime(2022, 12, 1))
+        Accountancy.objects.create(
+            card=self.card, IO="O", IO_type="Home", amount=15, datetime=datetime(2022, 12, 1, tzinfo=UTC)
+        )
+        Accountancy.objects.create(
+            card=self.card, IO="O", IO_type="Pets", amount=8, datetime=datetime(2022, 12, 1, tzinfo=UTC)
+        )
 
     def test_monthly_accountancy_search_form(self) -> None:
         search_term = {"IO_type": "Home"}
