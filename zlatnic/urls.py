@@ -25,6 +25,7 @@ urlpatterns = [
     path("", include("manager.urls", namespace="manager")),
     path("", include("users.urls", namespace="users")),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("__debug__/", include("debug_toolbar.urls")),
     *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
 ]
+if settings.DEBUG:
+    urlpatterns.append(path("__debug__/", include("debug_toolbar.urls")))
