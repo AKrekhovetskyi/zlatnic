@@ -79,13 +79,14 @@
           {{ form.image.errors }}
         </div>
 
-        <div class="big_plate">
-          <a href="{% url 'logout' %}">Logout</a>
-        </div>
-
         <input type="submit" value="Save" class="button orange_background text_shadow">
         <a href="{% url 'manager:index' %}" class="button orange_background text_shadow">Cancel</a>
         <input type="hidden" name="next" value="{{ next }}" />
+      </form>
+
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <input type="submit" value="Logout" class="button red_background text_shadow">
       </form>
 
     </div>
