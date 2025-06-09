@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import UTC, datetime
 
 from django.core.exceptions import ValidationError
 from django.db.models import Model, Q, Sum
@@ -33,7 +33,7 @@ def wallet_choice(wallet_type: str, wallet_id: int) -> tuple[Q, Model]:
 
 def monthly_financial_turnover(q_filter: Q, turnover_type: str) -> int:
     turnover = Accountancy.objects.filter(
-        q_filter & Q(IO=turnover_type) & Q(datetime__month=date.today().month)
+        q_filter & Q(IO=turnover_type) & Q(datetime__month=datetime.now(UTC).month)
     ).aggregate(Sum("amount"))
     if not turnover or not turnover.get("amount__sum"):
         return 0
