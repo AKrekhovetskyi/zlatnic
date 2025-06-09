@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -7,12 +8,16 @@ from faker import Faker
 
 from manager.models import Accountancy, Card, Currency
 
+if TYPE_CHECKING:
+    from django.contrib.auth.models import UserManager
+
 fake = Faker()
 
 
 class FormTests(TestCase):
     def setUp(self) -> None:
-        self.user = get_user_model().objects.create_user(username=fake.pystr(), password=fake.pystr())
+        user_manager: UserManager = get_user_model().objects  # type: ignore[reportAssignmentType]
+        self.user = user_manager.create_user(username=fake.pystr(), password=fake.pystr())
         self.client.force_login(self.user)
 
         self.currency = Currency.objects.create(name="U. S. Dollar", abbreviation="USD", sign="$")
@@ -43,12 +48,13 @@ class FormTests(TestCase):
 
 class SearchFormTests(TestCase):
     def setUp(self) -> None:
-        self.user = get_user_model().objects.create_user(username=fake.pystr(), password=fake.pystr())
-        self.client.force_login(self.user)
+        user_manager: UserManager = get_user_model().objects  # type: ignore[reportAssignmentType]
+        user = user_manager.create_user(username=fake.pystr(), password=fake.pystr())
+        self.client.force_login(user)
 
         self.currency = Currency.objects.create(name="U. S. Dollar", abbreviation="USD", sign="$")
         self.card = Card.objects.create(
-            user=self.user, bank_name="Mono", type="Payment card", balance=150, currency=self.currency
+            user=user, bank_name="Mono", type="Payment card", balance=150, currency=self.currency
         )
         Accountancy.objects.create(
             card=self.card, IO="O", IO_type="Home", amount=15, datetime=datetime(2022, 12, 1, tzinfo=UTC)

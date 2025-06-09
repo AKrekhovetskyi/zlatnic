@@ -16,7 +16,7 @@ fake = Faker()
 
 class ModelsTest(TestCase):
     def setUp(self) -> None:
-        user_manager: UserManager = get_user_model().objects
+        user_manager: UserManager = get_user_model().objects  # type: ignore[reportAssignmentType]
         self.user = user_manager.create_user(
             username=fake.pystr(),
             password=fake.pystr(),

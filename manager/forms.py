@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from manager.models import Accountancy
-from manager.wallet_operations import change_wallet_balance, wallet_choice, wallet_data_parse
+from manager.wallet_operations import change_wallet_balance, wallet_choice
 
 
 class AccountancyForm(forms.ModelForm):
@@ -17,7 +17,7 @@ class AccountancyForm(forms.ModelForm):
         if amount < 0:
             raise ValidationError("Amount can't be negative.")
 
-        wallet_type, previous_amount = wallet_data_parse(self.data)
+        wallet_type, previous_amount = self.data["wallet_choice"].split(" - ")
         _, self.wallet_obj = wallet_choice(
             wallet_type, self.instance.card_id or self.instance.cash_id or self.instance.cryptocurrency_id
         )
@@ -27,12 +27,11 @@ class AccountancyForm(forms.ModelForm):
 
         return super().clean()
 
-    def save(self, *, commit: bool = True) -> Any:
+    def save(self, *, commit: bool = True) -> Any:  # type: ignore[reportIncompatibleMethodOverride]
         accountancy = super().save(commit=False)
         self.clean()
         if commit:
             accountancy.amount = float(self.data["amount"])
-            accountancy.save()
             self.wallet_obj.save()
         return super().save(commit)
 

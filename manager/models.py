@@ -78,10 +78,7 @@ class Cryptocurrency(models.Model):
 class Accountancy(models.Model):
     INCOME = "I"
     OUTCOME = "O"
-    IN_OUT_COME: ClassVar[tuple[str, str]] = [
-        (INCOME, "Income"),
-        (OUTCOME, "Outcome"),
-    ]
+    IN_OUT_COME: ClassVar[dict[str, str]] = {INCOME: "Income", OUTCOME: "Outcome"}
     RELATED_NAME = "accountancy"
 
     card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name=RELATED_NAME, null=True, blank=True)
