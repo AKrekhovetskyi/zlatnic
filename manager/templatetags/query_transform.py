@@ -1,3 +1,5 @@
+from typing import Any
+
 from django import template
 from django.core.handlers.wsgi import WSGIRequest
 
@@ -5,7 +7,7 @@ register = template.Library()
 
 
 @register.simple_tag
-def query_transform(request: WSGIRequest, **kwargs) -> str:
+def query_transform(request: WSGIRequest, **kwargs: Any) -> str:
     updated = request.GET.copy()
     for key, value in kwargs.items():
         # print("KEY: ", key, "VALUE: ", value)
