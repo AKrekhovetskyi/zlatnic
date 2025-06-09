@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Any
+from typing import Any, ClassVar
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -28,8 +28,8 @@ class Card(models.Model):
         return super().save(*args, **kwargs)
 
     class Meta:
-        ordering = ["bank_name"]
-        constraints = [
+        ordering: ClassVar[list[str]] = ["bank_name"]
+        constraints: ClassVar[list[models.UniqueConstraint | models.CheckConstraint]] = [
             models.UniqueConstraint(fields=("user", "bank_name", "type"), name="unique_user_cards"),
             models.CheckConstraint(check=(Q(balance__gte=0)), name="positive_card_balance"),
         ]
@@ -50,7 +50,7 @@ class Cash(models.Model):
     class Meta:
         verbose_name = "cash"
         verbose_name_plural = "cash"
-        constraints = [
+        constraints: ClassVar[list[models.UniqueConstraint | models.CheckConstraint]] = [
             models.UniqueConstraint(fields=("user", "currency"), name="unique_user_cash"),
             models.CheckConstraint(check=(Q(balance__gte=0)), name="positive_cash_balance"),
         ]
@@ -65,8 +65,8 @@ class Cryptocurrency(models.Model):
     balance = models.DecimalField(max_digits=20, decimal_places=8, default=Decimal(0.0))
 
     class Meta:
-        ordering = ["name"]
-        constraints = [
+        ordering: ClassVar[list[str]] = ["name"]
+        constraints: ClassVar[list[models.UniqueConstraint | models.CheckConstraint]] = [
             models.UniqueConstraint(fields=("user", "name"), name="unique_user_cryptocurrencies"),
             models.CheckConstraint(check=(Q(balance__gte=0)), name="positive_cryptocurrency_balance"),
         ]
@@ -78,7 +78,7 @@ class Cryptocurrency(models.Model):
 class Accountancy(models.Model):
     INCOME = "I"
     OUTCOME = "O"
-    IN_OUT_COME = [
+    IN_OUT_COME: ClassVar[tuple[str, str]] = [
         (INCOME, "Income"),
         (OUTCOME, "Outcome"),
     ]
@@ -101,8 +101,8 @@ class Accountancy(models.Model):
             raise ValidationError("Amount can't be negative.")
 
     class Meta:
-        ordering = ["-datetime"]
-        constraints = [
+        ordering: ClassVar[list[str]] = ["-datetime"]
+        constraints: ClassVar[list[models.CheckConstraint]] = [
             models.CheckConstraint(
                 check=(Q(card__isnull=False) & Q(cash__isnull=True) & Q(cryptocurrency__isnull=True))
                 | (Q(card__isnull=True) & Q(cash__isnull=False) & Q(cryptocurrency__isnull=True))
