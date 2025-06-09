@@ -2,7 +2,8 @@
 # exit on error
 set -o errexit
 
-pip install -r requirements.txt
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-python manage.py collectstatic --no-input
-python manage.py migrate
+uv run manage.py collectstatic --no-input
+uv run manage.py migrate
+uv run manage.py loaddata zlatnic_db_data.json
