@@ -22,7 +22,7 @@ class Card(models.Model):
     balance = models.FloatField(default=0.0)
     currency = models.ForeignKey(Currency, on_delete=models.RESTRICT, related_name="cards")
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.balance = round(self.balance, 2)
         return super().save(*args, **kwargs)
 
@@ -42,7 +42,7 @@ class Cash(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.RESTRICT, related_name="cash")
     balance = models.FloatField(default=0.0)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.balance = round(self.balance, 2)
         return super().save(*args, **kwargs)
 
@@ -93,7 +93,7 @@ class Accountancy(models.Model):
     amount = models.FloatField()
     datetime = models.DateTimeField(auto_now_add=True)
 
-    def clean(self):
+    def clean(self) -> None:
         if self.card and self.cash and self.cryptocurrency:
             raise ValidationError("Only one of the wallet fields can be set.")
         if self.amount < 0:

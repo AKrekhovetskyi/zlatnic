@@ -26,25 +26,25 @@ class ModelsTest(TestCase):
 
         return super().setUp()
 
-    def test_currency_str(self):
+    def test_currency_str(self) -> None:
         self.assertEqual(str(self.currency), f"{self.currency.name} ({self.currency.abbreviation})")
 
-    def test_card_str(self):
+    def test_card_str(self) -> None:
         self.assertEqual(
             str(self.card),
             f"Card: {self.card.bank_name} - {self.card.type} - {self.card.balance} {self.card.currency.sign}",
         )
 
-    def test_card_clean(self):
+    def test_card_clean(self) -> None:
         self.assertEqual(self.card.balance, round(BALANCE, 2))
 
-    def test_cash_str(self):
+    def test_cash_str(self) -> None:
         self.assertEqual(
             str(self.cash), f"Cash - {self.cash.balance} {self.cash.currency.sign} ({self.currency.abbreviation})"
         )
 
-    def test_cash_clean(self):
+    def test_cash_clean(self) -> None:
         self.assertEqual(self.cash.balance, round(BALANCE, 2))
 
-    def test_cryptocurrency_str(self):
+    def test_cryptocurrency_str(self) -> None:
         self.assertEqual(str(self.crypto), f"Cryptocurrency: {self.crypto.name} - {self.crypto.balance}")

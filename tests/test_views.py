@@ -22,15 +22,15 @@ MONTHLY_ACCOUNTANCY_URL = reverse(
 
 
 class PublicViewsTests(TestCase):
-    def test_wallets_login_required(self):
+    def test_wallets_login_required(self) -> None:
         response = self.client.get(WALLETS_URL)
         self.assertNotEqual(response.status_code, 200)
 
-    def test_index_login_required(self):
+    def test_index_login_required(self) -> None:
         response = self.client.get(INDEX_URL)
         self.assertNotEqual(response.status_code, 200)
 
-    def test_accountancy_login_required(self):
+    def test_accountancy_login_required(self) -> None:
         response = self.client.get(ACCOUNTANCY_URL)
         self.assertNotEqual(response.status_code, 200)
 
@@ -55,7 +55,7 @@ class PrivateViewsTests(TestCase):
             cryptocurrency=bitcoin, IO="I", IO_type="Salary", amount="0.00020001", datetime=datetime(2022, 12, 1)
         )
 
-    def test_retrieve_wallets(self):
+    def test_retrieve_wallets(self) -> None:
         response = self.client.get(WALLETS_URL)
         cards = Card.objects.all()
         cash = Cash.objects.all()
@@ -67,7 +67,7 @@ class PrivateViewsTests(TestCase):
         self.assertEqual(list(response.context["crypto_list"]), list(crypto))
         self.assertTemplateUsed(response, "manager/wallets.html")
 
-    def test_retrieve_monthly_financial_turnover(self):
+    def test_retrieve_monthly_financial_turnover(self) -> None:
         response = self.client.get(ACCOUNTANCY_URL)
         accountancy = Accountancy.objects.all()
 
@@ -75,7 +75,7 @@ class PrivateViewsTests(TestCase):
         self.assertNotEqual(list(response.context["accountancy_list"]), list(accountancy))
         self.assertTemplateUsed(response, "manager/monthly_accountancy_list.html")
 
-    def test_retrieve_wallets_financial_turnover(self):
+    def test_retrieve_wallets_financial_turnover(self) -> None:
         response = self.client.get(MONTHLY_ACCOUNTANCY_URL)
         accountancy = Accountancy.objects.filter(Q(datetime__month=11))
 
