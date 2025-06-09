@@ -130,16 +130,13 @@ def index(request: WSGIRequest) -> HttpResponse:
     cards, cash_types, crypto = wallet_objects(request)
 
     if cards:
-        for card in cards:
-            wallets_set.append([f"card - {card.id}", card])
+        wallets_set.extend([f"card - {card.id}", card] for card in cards)
 
     if cash_types:
-        for cash in cash_types:
-            wallets_set.append([f"cash - {cash.id}", cash])
+        wallets_set.extend([f"cash - {cash.id}", cash] for cash in cash_types)
 
     if crypto:
-        for crypto in crypto:
-            wallets_set.append([f"crypto - {crypto.id}", crypto])
+        wallets_set.extend([f"crypto - {crypto.id}", crypto] for crypto in crypto)
 
     # Check whether POST includes any wallet data to process
     if request.POST.get("wallet_choice"):
