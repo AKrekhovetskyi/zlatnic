@@ -1,18 +1,18 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-
+from faker import Faker
 from manager.models import Card, Cash, Cryptocurrency, Currency
 
-USERNAME = "test1"
-PASSWORD = "test12345"
 BALANCE = 150.0002
+
+fake = Faker()
 
 
 class ModelsTest(TestCase):
     def setUp(self) -> None:
         self.user = get_user_model().objects.create_user(  # type: ignore
-            username=USERNAME,
-            password=PASSWORD,
+            username=fake.pystr(),
+            password=fake.pystr(),
             first_name="Test",
             last_name="Testovetskyi",
             phone_number="+380000000001",
