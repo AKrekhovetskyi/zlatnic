@@ -23,10 +23,6 @@ class Card(models.Model):
     balance = models.FloatField(default=0.0)
     currency = models.ForeignKey(Currency, on_delete=models.RESTRICT, related_name="cards")
 
-    def save(self, *args, **kwargs: Any) -> None:
-        self.balance = round(self.balance, 2)
-        return super().save(*args, **kwargs)
-
     class Meta:
         ordering: ClassVar[list[str]] = ["bank_name"]
         constraints: ClassVar[list[models.UniqueConstraint | models.CheckConstraint]] = [
@@ -37,15 +33,15 @@ class Card(models.Model):
     def __str__(self):
         return f"Card: {self.bank_name} - {self.type} - {self.balance} {self.currency.sign}"
 
+    def save(self, *args, **kwargs: Any) -> None:
+        self.balance = round(self.balance, 2)
+        return super().save(*args, **kwargs)
+
 
 class Cash(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="cash")
     currency = models.ForeignKey(Currency, on_delete=models.RESTRICT, related_name="cash")
     balance = models.FloatField(default=0.0)
-
-    def save(self, *args, **kwargs: Any) -> None:
-        self.balance = round(self.balance, 2)
-        return super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "cash"
@@ -57,6 +53,10 @@ class Cash(models.Model):
 
     def __str__(self) -> str:
         return f"Cash - {self.balance} {self.currency.sign} ({self.currency.abbreviation})"
+
+    def save(self, *args, **kwargs: Any) -> None:
+        self.balance = round(self.balance, 2)
+        return super().save(*args, **kwargs)
 
 
 class Cryptocurrency(models.Model):
@@ -94,12 +94,6 @@ class Accountancy(models.Model):
     amount = models.FloatField()
     datetime = models.DateTimeField(auto_now_add=True)
 
-    def clean(self) -> None:
-        if self.card and self.cash and self.cryptocurrency:
-            raise ValidationError("Only one of the wallet fields can be set.")
-        if self.amount < 0:
-            raise ValidationError("Amount can't be negative.")
-
     class Meta:
         ordering: ClassVar[list[str]] = ["-datetime"]
         constraints: ClassVar[list[models.CheckConstraint]] = [
@@ -111,3 +105,9 @@ class Accountancy(models.Model):
             ),
             models.CheckConstraint(check=(Q(amount__gte=0)), name="positive_amount"),
         ]
+
+    def clean(self) -> None:
+        if self.card and self.cash and self.cryptocurrency:
+            raise ValidationError("Only one of the wallet fields can be set.")
+        if self.amount < 0:
+            raise ValidationError("Amount can't be negative.")
