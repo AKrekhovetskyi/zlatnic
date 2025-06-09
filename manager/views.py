@@ -3,6 +3,7 @@ from typing import Any
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
+from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Q, QuerySet, Sum
 from django.db.models.functions import Round, TruncMonth
 from django.http.response import HttpResponse
@@ -23,7 +24,7 @@ from manager.wallet_operations import (
 )
 
 
-def wallet_objects(request) -> tuple[QuerySet, QuerySet, QuerySet]:
+def wallet_objects(request: WSGIRequest) -> tuple[QuerySet, QuerySet, QuerySet]:
     user = request.user
     cards = user.cards.select_related("currency")
     cash_types = user.cash.select_related("currency")
@@ -33,7 +34,7 @@ def wallet_objects(request) -> tuple[QuerySet, QuerySet, QuerySet]:
 
 
 @login_required
-def wallets(request) -> HttpResponse:
+def wallets(request: WSGIRequest) -> HttpResponse:
     cards, cash_types, crypto = wallet_objects(request)
 
     context = {
@@ -119,7 +120,7 @@ class CryptoDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 
 @login_required
-def index(request) -> HttpResponse:
+def index(request: WSGIRequest) -> HttpResponse:
     """Function-based view for the base page of the site."""
     wallets_set = []
     error = False
@@ -235,7 +236,7 @@ class MonthlyAccountancy(LoginRequiredMixin, generic.ListView):
     template_name = "manager/monthly_accountancy.html"
     paginate_by = 10
 
-    def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         IO_type = self.request.GET.get("IO_type", "")
         context["search_form"] = AccountancySearchForm(initial={"IO_type": IO_type})

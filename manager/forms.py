@@ -27,7 +27,7 @@ class AccountancyForm(forms.ModelForm):
 
         return super().clean()
 
-    def save(self, commit=True) -> Any:
+    def save(self, *, commit: bool = True) -> Any:
         accountancy = super().save(commit=False)
         self.clean()
         if commit:

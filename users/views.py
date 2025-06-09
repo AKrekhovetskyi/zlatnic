@@ -3,6 +3,7 @@ from typing import Any
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -11,7 +12,7 @@ from django.views import generic
 from users.forms import NewUserForm, UserAccountForm
 
 
-def register_request(request) -> HttpResponseRedirect | HttpResponse:
+def register_request(request: WSGIRequest) -> HttpResponseRedirect | HttpResponse:
     """User registration function-based view."""
     if request.method == "POST":
         form = NewUserForm(request.POST)
