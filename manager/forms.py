@@ -1,3 +1,5 @@
+from typing import Any
+
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -10,7 +12,7 @@ class AccountancyForm(forms.ModelForm):
         model = Accountancy
         fields = ()
 
-    def clean(self):
+    def clean(self) -> dict[str, Any] | None:
         amount = float(self.data["amount"])
         if amount < 0:
             raise ValidationError("Amount can't be negative.")
@@ -25,7 +27,7 @@ class AccountancyForm(forms.ModelForm):
 
         return super().clean()
 
-    def save(self, commit=True):
+    def save(self, commit=True) -> Any:
         accountancy = super().save(commit=False)
         self.clean()
         if commit:

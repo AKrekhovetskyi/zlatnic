@@ -1,6 +1,9 @@
+from typing import Any
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -8,7 +11,7 @@ from django.views import generic
 from users.forms import NewUserForm, UserAccountForm
 
 
-def register_request(request):
+def register_request(request) -> HttpResponseRedirect | HttpResponse:
     """User registration function-based view."""
     if request.method == "POST":
         form = NewUserForm(request.POST)
@@ -26,7 +29,7 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = UserAccountForm
     success_url = reverse_lazy("manager:index")
 
-    def get_form_kwargs(self):
+    def get_form_kwargs(self) -> dict[str, Any]:
         kwargs = super().get_form_kwargs()
         kwargs["files"] = self.request.FILES
 

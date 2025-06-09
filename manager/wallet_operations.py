@@ -31,13 +31,13 @@ def wallet_choice(wallet_type: str, wallet_id: int) -> tuple[Q, Model]:
     return q_filter, wallet_obj
 
 
-def monthly_financial_turnover(q_filter: Q, turnover_type: str):
+def monthly_financial_turnover(q_filter: Q, turnover_type: str) -> int:
     turnover = Accountancy.objects.filter(
         q_filter & Q(IO=turnover_type) & Q(datetime__month=date.today().month)
-    ).aggregate(Sum("amount"))["amount__sum"]
-    turnover = round(turnover, 8) if turnover else 0
-
-    return turnover
+    ).aggregate(Sum("amount"))
+    if not turnover or not turnover.get("amount__sum"):
+        return 0
+    return round(turnover["amount__sum"], 8)
 
 
 def change_wallet_balance(expense: str, wallet_obj: Model, amount: float) -> Model:
