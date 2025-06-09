@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from django.contrib.auth import get_user_model
 from django.db.models import Q
@@ -13,6 +14,9 @@ from manager.models import (
     Cryptocurrency,
     Currency,
 )
+
+if TYPE_CHECKING:
+    from django.contrib.auth.models import UserManager
 
 WALLETS_URL = reverse("manager:wallets")
 INDEX_URL = reverse("manager:index")
@@ -40,9 +44,8 @@ class PublicViewsTests(TestCase):
 
 class PrivateViewsTests(TestCase):
     def setUp(self) -> None:
-        self.user = get_user_model().objects.create_user(  # type: ignore
-            username=fake.pystr(), password=fake.pystr()
-        )
+        user_manager: UserManager = get_user_model().objects
+        self.user = user_manager.create_user(username=fake.pystr(), password=fake.pystr())
         self.client.force_login(self.user)
 
         currency = Currency.objects.create(name="U. S. Dollar", abbreviation="USD", sign="$")

@@ -226,7 +226,7 @@ class MonthlyAccountancyList(LoginRequiredMixin, generic.ListView):
                 "month",
             )
             .order_by("-month")
-        )  # type: ignore
+        )
 
         return self.queryset
 
