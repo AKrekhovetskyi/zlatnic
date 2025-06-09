@@ -1,7 +1,13 @@
+from typing import TYPE_CHECKING
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from faker import Faker
+
 from manager.models import Card, Cash, Cryptocurrency, Currency
+
+if TYPE_CHECKING:
+    from django.contrib.auth.models import UserManager
 
 BALANCE = 150.0002
 
@@ -10,7 +16,8 @@ fake = Faker()
 
 class ModelsTest(TestCase):
     def setUp(self) -> None:
-        self.user = get_user_model().objects.create_user(  # type: ignore
+        user_manager: UserManager = get_user_model().objects
+        self.user = user_manager.create_user(
             username=fake.pystr(),
             password=fake.pystr(),
             first_name="Test",
