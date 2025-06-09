@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.handlers.wsgi import WSGIRequest
-from django.db.models import Q, QuerySet, Sum
+from django.db.models import Manager, Model, Q, QuerySet, Sum
 from django.db.models.functions import Round, TruncMonth
 from django.http.response import HttpResponse
 from django.shortcuts import render
@@ -124,7 +124,7 @@ def index(request: WSGIRequest) -> HttpResponse:
     """Function-based view for the base page of the site."""
     wallets_set = []
     error = False
-    current_balance = income = outcome = 0
+    income = outcome = 0
     accountancy = Accountancy.objects
 
     cards, cash_types, crypto = wallet_objects(request)
@@ -138,57 +138,63 @@ def index(request: WSGIRequest) -> HttpResponse:
     if crypto:
         wallets_set.extend([f"crypto - {crypto.id}", crypto] for crypto in crypto)
 
-    # Check whether POST includes any wallet data to process
     if request.POST.get("wallet_choice"):
-        wallet_type, wallet_id = wallet_data_parse(request.POST)
-        q_filter, wallet_obj = wallet_choice(wallet_type, wallet_id)
-
-        if ("Outcome" in request.POST or request.POST["Income"] != "none") and request.POST["amount"]:
-            amount = float(request.POST["amount"])
-            expense = "Outcome" if "Outcome" in request.POST else "Income"
-
-            try:
-                wallet_obj = change_wallet_balance(expense, wallet_obj, amount)
-
-                acc_data = {
-                    "IO": expense[0],
-                    "IO_type": request.POST[expense],
-                    "amount": amount,
-                }
-
-                if wallet_type == "card":
-                    accountancy.create(card=wallet_obj, **acc_data)
-                elif wallet_type == "cash":
-                    accountancy.create(cash=wallet_obj, **acc_data)
-                elif wallet_type == "crypto":
-                    accountancy.create(cryptocurrency=wallet_obj, **acc_data)
-                wallet_obj.save()
-
-            except ValidationError as ve:
-                error = ve
-
-        # Move selected wallet at the top
-        for wallet_index, wallet in enumerate(wallets_set):
-            if wallet[0] == request.POST["wallet_choice"]:
-                wallets_set.insert(0, wallets_set.pop(wallet_index))
-                wallets_set[0][1] = wallet_obj
-                break
-
-        current_balance = wallets_set[0][1].balance
-
-        # Get monthly incomes and outcomes
-        income = monthly_financial_turnover(q_filter, "I")
-        outcome = monthly_financial_turnover(q_filter, "O")
+        wallets_set, error, income, outcome = process_wallet_post(request, wallets_set, accountancy)
 
     context = {
         "wallets": wallets_set,
-        "current_balance": current_balance,
+        "current_balance": wallets_set[0][1].balance if wallets_set else 0,
         "Income": income,
         "Outcome": outcome,
         "error": error,
     }
 
     return render(request, "manager/index.html", context=context)
+
+
+def process_wallet_post(
+    request: WSGIRequest, wallets_set: list[list[str, Model]], accountancy: Manager[Accountancy]
+) -> tuple[list, Any, float, float, float]:
+    error = False
+    wallet_type, wallet_id = wallet_data_parse(request.POST)
+    q_filter, wallet_obj = wallet_choice(wallet_type, wallet_id)
+
+    if ("Outcome" in request.POST or request.POST["Income"] != "none") and request.POST["amount"]:
+        amount = float(request.POST["amount"])
+        expense = "Outcome" if "Outcome" in request.POST else "Income"
+
+        try:
+            wallet_obj = change_wallet_balance(expense, wallet_obj, amount)
+
+            acc_data = {
+                "IO": expense[0],
+                "IO_type": request.POST[expense],
+                "amount": amount,
+            }
+
+            if wallet_type == "card":
+                accountancy.create(card=wallet_obj, **acc_data)
+            elif wallet_type == "cash":
+                accountancy.create(cash=wallet_obj, **acc_data)
+            elif wallet_type == "crypto":
+                accountancy.create(cryptocurrency=wallet_obj, **acc_data)
+            wallet_obj.save()
+
+        except ValidationError as ve:
+            error = ve
+
+    # Move selected wallet at the top
+    for wallet_index, wallet in enumerate(wallets_set):
+        if wallet[0] == request.POST["wallet_choice"]:
+            wallets_set.insert(0, wallets_set.pop(wallet_index))
+            wallets_set[0][1] = wallet_obj
+            break
+
+    # Get monthly incomes and outcomes
+    income = monthly_financial_turnover(q_filter, "I")
+    outcome = monthly_financial_turnover(q_filter, "O")
+
+    return wallets_set, error, income, outcome
 
 
 class MonthlyAccountancyList(LoginRequiredMixin, generic.ListView):
