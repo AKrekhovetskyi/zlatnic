@@ -236,7 +236,7 @@ class MonthlyAccountancy(LoginRequiredMixin, generic.ListView):
     template_name = "manager/monthly_accountancy.html"
     paginate_by = 10
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         io_type = self.request.GET.get("IO_type", "")
         context["search_form"] = AccountancySearchForm(initial={"IO_type": io_type})
