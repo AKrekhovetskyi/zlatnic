@@ -238,8 +238,8 @@ class MonthlyAccountancy(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        IO_type = self.request.GET.get("IO_type", "")
-        context["search_form"] = AccountancySearchForm(initial={"IO_type": IO_type})
+        io_type = self.request.GET.get("IO_type", "")
+        context["search_form"] = AccountancySearchForm(initial={"IO_type": io_type})
 
         return context
 
