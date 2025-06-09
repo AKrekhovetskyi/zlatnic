@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import Any
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -22,7 +23,7 @@ class Card(models.Model):
     balance = models.FloatField(default=0.0)
     currency = models.ForeignKey(Currency, on_delete=models.RESTRICT, related_name="cards")
 
-    def save(self, *args, **kwargs) -> None:
+    def save(self, *args, **kwargs: Any) -> None:
         self.balance = round(self.balance, 2)
         return super().save(*args, **kwargs)
 
@@ -42,7 +43,7 @@ class Cash(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.RESTRICT, related_name="cash")
     balance = models.FloatField(default=0.0)
 
-    def save(self, *args, **kwargs) -> None:
+    def save(self, *args, **kwargs: Any) -> None:
         self.balance = round(self.balance, 2)
         return super().save(*args, **kwargs)
 
