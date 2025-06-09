@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from django.contrib.auth import get_user_model
 from django.db.models import Q
@@ -49,10 +49,14 @@ class PrivateViewsTests(TestCase):
         bitcoin = Cryptocurrency.objects.create(user=self.user, name="BitCoin")
         Cryptocurrency.objects.create(user=self.user, name="Dogecoin")
         Accountancy.objects.create(
-            card=payment_card, IO="I", IO_type="Salary", amount="25000", datetime=datetime(2022, 11, 1)
+            card=payment_card, IO="I", IO_type="Salary", amount="25000", datetime=datetime(2022, 11, 1, tzinfo=UTC)
         )
         Accountancy.objects.create(
-            cryptocurrency=bitcoin, IO="I", IO_type="Salary", amount="0.00020001", datetime=datetime(2022, 12, 1)
+            cryptocurrency=bitcoin,
+            IO="I",
+            IO_type="Salary",
+            amount="0.00020001",
+            datetime=datetime(2022, 12, 1, tzinfo=UTC),
         )
 
     def test_retrieve_wallets(self) -> None:
