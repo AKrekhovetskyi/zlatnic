@@ -21,9 +21,9 @@ class FormTests(TestCase):
         )
 
     def test_outcome_accountancy_form_for_incomes(self) -> None:
-        accountancy_I = Accountancy.objects.create(card=self.card, IO="I", IO_type="Salary", amount=100)
+        accountancy_income = Accountancy.objects.create(card=self.card, IO="I", IO_type="Salary", amount=100)
 
-        form_data = {"wallet_choice": f"card - {accountancy_I.amount}", "amount": "50"}
+        form_data = {"wallet_choice": f"card - {accountancy_income.amount}", "amount": "50"}
         response = self.client.post(path=reverse("manager:accountancy-update", kwargs={"pk": 1}), data=form_data)
 
         self.assertEqual(response.status_code, 302)
@@ -31,9 +31,9 @@ class FormTests(TestCase):
         self.assertEqual(Accountancy.objects.get(id=1).amount, 50)
 
     def test_outcome_accountancy_form_for_outcomes(self) -> None:
-        accountancy_O = Accountancy.objects.create(card=self.card, IO="O", IO_type="Home", amount=100)
+        accountancy_outcome = Accountancy.objects.create(card=self.card, IO="O", IO_type="Home", amount=100)
 
-        form_data = {"wallet_choice": f"card - {accountancy_O.amount}", "amount": "50"}
+        form_data = {"wallet_choice": f"card - {accountancy_outcome.amount}", "amount": "50"}
         response = self.client.post(path=reverse("manager:accountancy-update", kwargs={"pk": 1}), data=form_data)
 
         self.assertEqual(response.status_code, 302)
