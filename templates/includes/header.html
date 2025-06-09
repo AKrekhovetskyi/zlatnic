@@ -21,23 +21,17 @@
   <div class="header_div">
     <table style="direction: rtl;">
       <tr>
-        <td rowspan="2" class="drop_menu">
+        <td rowspan="2">
           <a href="{% url 'users:account' user.pk %}">
-            <img
-              class="profile_picture"
+            <img class="profile_picture"
               src="{% if user.image %}{{ user.image.url }}{% else %}/static/source/Profile_picture.jpg{% endif %}"
               alt="profile_picture">
           </a>
         </td>
         <td class="hidden">
-          <h2 class="_marmelad_regular regular_text_shadow">
+          <h2 class="big_marmelad regular_text_shadow">
             {{ user.username }}
           </h2>
-          <a href="{% url 'logout' %}"
-              class="_comforta_bold"
-              style="float: right;">
-            Logout
-          </a>
         </td>
       </tr>
     </table>
