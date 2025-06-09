@@ -27,7 +27,7 @@ class Card(models.Model):
         ordering: ClassVar[list[str]] = ["bank_name"]
         constraints: ClassVar[list[models.UniqueConstraint | models.CheckConstraint]] = [
             models.UniqueConstraint(fields=("user", "bank_name", "type"), name="unique_user_cards"),
-            models.CheckConstraint(check=(Q(balance__gte=0)), name="positive_card_balance"),
+            models.CheckConstraint(condition=Q(balance__gte=0), name="positive_card_balance"),
         ]
 
     def __str__(self) -> str:
@@ -48,7 +48,7 @@ class Cash(models.Model):
         verbose_name_plural = "cash"
         constraints: ClassVar[list[models.UniqueConstraint | models.CheckConstraint]] = [
             models.UniqueConstraint(fields=("user", "currency"), name="unique_user_cash"),
-            models.CheckConstraint(check=(Q(balance__gte=0)), name="positive_cash_balance"),
+            models.CheckConstraint(condition=Q(balance__gte=0), name="positive_cash_balance"),
         ]
 
     def __str__(self) -> str:
@@ -68,7 +68,7 @@ class Cryptocurrency(models.Model):
         ordering: ClassVar[list[str]] = ["name"]
         constraints: ClassVar[list[models.UniqueConstraint | models.CheckConstraint]] = [
             models.UniqueConstraint(fields=("user", "name"), name="unique_user_cryptocurrencies"),
-            models.CheckConstraint(check=(Q(balance__gte=0)), name="positive_cryptocurrency_balance"),
+            models.CheckConstraint(condition=Q(balance__gte=0), name="positive_cryptocurrency_balance"),
         ]
 
     def __str__(self) -> str:
@@ -95,12 +95,12 @@ class Accountancy(models.Model):
         ordering: ClassVar[list[str]] = ["-datetime"]
         constraints: ClassVar[list[models.CheckConstraint]] = [
             models.CheckConstraint(
-                check=(Q(card__isnull=False) & Q(cash__isnull=True) & Q(cryptocurrency__isnull=True))
+                condition=(Q(card__isnull=False) & Q(cash__isnull=True) & Q(cryptocurrency__isnull=True))
                 | (Q(card__isnull=True) & Q(cash__isnull=False) & Q(cryptocurrency__isnull=True))
                 | (Q(card__isnull=True) & Q(cash__isnull=True) & Q(cryptocurrency__isnull=False)),
                 name="only_one_wallet",
             ),
-            models.CheckConstraint(check=(Q(amount__gte=0)), name="positive_amount"),
+            models.CheckConstraint(condition=Q(amount__gte=0), name="positive_amount"),
         ]
 
     def __str__(self) -> str:
