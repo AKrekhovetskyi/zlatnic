@@ -10,7 +10,6 @@ register = template.Library()
 def query_transform(request: WSGIRequest, **kwargs: Any) -> str:
     updated = request.GET.copy()
     for key, value in kwargs.items():
-        # print("KEY: ", key, "VALUE: ", value)
         if value is not None:
             updated[key] = value
         else:
