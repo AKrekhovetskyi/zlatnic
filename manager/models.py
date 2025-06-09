@@ -30,7 +30,7 @@ class Card(models.Model):
             models.CheckConstraint(check=(Q(balance__gte=0)), name="positive_card_balance"),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Card: {self.bank_name} - {self.type} - {self.balance} {self.currency.sign}"
 
     def save(self, *args: Any, **kwargs: Any) -> None:
