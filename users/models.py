@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-def user_image_file_path(instance, filename):
+def user_image_file_path(instance, filename) -> str:
     _, extension = os.path.splitext(filename)
     filename = f"{slugify(instance.username)}-{uuid.uuid4()}{extension}"
 

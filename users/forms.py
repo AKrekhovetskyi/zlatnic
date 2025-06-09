@@ -1,3 +1,5 @@
+from typing import Any
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
@@ -19,7 +21,7 @@ class NewUserForm(UserCreationForm):
             "image",
         )
 
-    def save(self, commit=True):
+    def save(self, commit=True) -> Any:
         user = super().save(commit=False)
         user.email = self.cleaned_data["email"]
         if commit:

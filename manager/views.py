@@ -1,8 +1,11 @@
+from typing import Any
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
-from django.db.models import Q, Sum
+from django.db.models import Q, QuerySet, Sum
 from django.db.models.functions import Round, TruncMonth
+from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -20,7 +23,7 @@ from manager.wallet_operations import (
 )
 
 
-def wallet_objects(request):
+def wallet_objects(request) -> tuple[QuerySet, QuerySet, QuerySet]:
     user = request.user
     cards = user.cards.select_related("currency")
     cash_types = user.cash.select_related("currency")
@@ -30,7 +33,7 @@ def wallet_objects(request):
 
 
 @login_required
-def wallets(request):
+def wallets(request) -> HttpResponse:
     cards, cash_types, crypto = wallet_objects(request)
 
     context = {
@@ -116,7 +119,7 @@ class CryptoDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 
 @login_required
-def index(request):
+def index(request) -> HttpResponse:
     """Function-based view for the base page of the site."""
     wallets_set = []
     error = False
@@ -195,7 +198,7 @@ class MonthlyAccountancyList(LoginRequiredMixin, generic.ListView):
     template_name = "manager/monthly_accountancy_list.html"
     paginate_by = 10
 
-    def get_queryset(self):
+    def get_queryset(self) -> Any | QuerySet | None:
         user_id = self.request.user.id
 
         # Get month expenses
@@ -232,14 +235,14 @@ class MonthlyAccountancy(LoginRequiredMixin, generic.ListView):
     template_name = "manager/monthly_accountancy.html"
     paginate_by = 10
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         IO_type = self.request.GET.get("IO_type", "")
         context["search_form"] = AccountancySearchForm(initial={"IO_type": IO_type})
 
         return context
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet | Any | None:
         details = self.request.resolver_match.kwargs
         q_filter, wallet_obj = wallet_choice(details["wallet"], details["wallet_id"])
 
