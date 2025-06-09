@@ -106,6 +106,9 @@ class Accountancy(models.Model):
             models.CheckConstraint(check=(Q(amount__gte=0)), name="positive_amount"),
         ]
 
+    def __str__(self) -> str:
+        return f"Accountancy: {self.IO}, {self.IO_type}, {self.amount}, {self.datetime}"
+
     def clean(self) -> None:
         if self.card and self.cash and self.cryptocurrency:
             raise ValidationError("Only one of the wallet fields can be set.")
