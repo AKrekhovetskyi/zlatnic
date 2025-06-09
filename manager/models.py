@@ -62,7 +62,7 @@ class Cash(models.Model):
 class Cryptocurrency(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="cryptocurrencies")
     name = models.CharField(max_length=50)
-    balance = models.DecimalField(max_digits=20, decimal_places=8, default=Decimal(0.0))
+    balance = models.DecimalField(max_digits=20, decimal_places=8, default=Decimal("0.0"))
 
     class Meta:
         ordering: ClassVar[list[str]] = ["name"]
