@@ -33,7 +33,7 @@ class Card(models.Model):
     def __str__(self):
         return f"Card: {self.bank_name} - {self.type} - {self.balance} {self.currency.sign}"
 
-    def save(self, *args, **kwargs: Any) -> None:
+    def save(self, *args: Any, **kwargs: Any) -> None:
         self.balance = round(self.balance, 2)
         return super().save(*args, **kwargs)
 
@@ -54,7 +54,7 @@ class Cash(models.Model):
     def __str__(self) -> str:
         return f"Cash - {self.balance} {self.currency.sign} ({self.currency.abbreviation})"
 
-    def save(self, *args, **kwargs: Any) -> None:
+    def save(self, *args: Any, **kwargs: Any) -> None:
         self.balance = round(self.balance, 2)
         return super().save(*args, **kwargs)
 
