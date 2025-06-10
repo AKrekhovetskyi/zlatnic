@@ -124,6 +124,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/1f/21/3cedee63417bc5553eed0c204be478071c9ab208e5e259e97287590194f1/django_storages-1.14.6-py3-none-any.whl", hash = "sha256:11b7b6200e1cb5ffcd9962bd3673a39c7d6a6109e8096f0e03d46fab3d3aabd9", size = 33095, upload-time = "2025-04-02T02:34:53.291Z" },
 ]
 
+[package.optional-dependencies]
+dropbox = [
+    { name = "dropbox" },
+]
+
 [[package]]
 name = "django-stubs"
 version = "5.2.0"
@@ -458,9 +463,8 @@ dependencies = [
     { name = "dj-database-url" },
     { name = "django" },
     { name = "django-phonenumber-field" },
-    { name = "django-storages" },
+    { name = "django-storages", extra = ["dropbox"] },
     { name = "django-stubs" },
-    { name = "dropbox" },
     { name = "gunicorn" },
     { name = "phonenumbers" },
     { name = "pillow" },
@@ -480,9 +484,8 @@ requires-dist = [
     { name = "dj-database-url", specifier = ">=3.0.0" },
     { name = "django", specifier = ">=5.2.2" },
     { name = "django-phonenumber-field", specifier = ">=8.1.0" },
-    { name = "django-storages", specifier = ">=1.14.6" },
+    { name = "django-storages", extras = ["dropbox"], specifier = ">=1.14.6" },
     { name = "django-stubs", specifier = ">=5.2.0" },
-    { name = "dropbox", specifier = ">=12.0.2" },
     { name = "gunicorn", specifier = ">=23.0.0" },
     { name = "phonenumbers", specifier = ">=9.0.6" },
     { name = "pillow", specifier = ">=11.2.1" },
