@@ -1,5 +1,3 @@
-from typing import Any
-
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.handlers.wsgi import WSGIRequest
@@ -28,9 +26,3 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = get_user_model()
     form_class = UserAccountForm
     success_url = reverse_lazy("manager:index")
-
-    def get_form_kwargs(self) -> dict[str, Any]:
-        kwargs = super().get_form_kwargs()
-        kwargs["files"] = self.request.FILES
-
-        return kwargs
