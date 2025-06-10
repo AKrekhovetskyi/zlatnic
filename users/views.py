@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model, login
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
@@ -6,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from users.forms import NewUserForm, UserAccountForm
+from users.forms import NewUserForm, UserAccountForm, UserPasswordChangeForm
 
 
 def register_request(request: WSGIRequest) -> HttpResponseRedirect | HttpResponse:
@@ -26,3 +27,8 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = get_user_model()
     form_class = UserAccountForm
     success_url = reverse_lazy("manager:index")
+
+
+class UserPasswordChangeView(LoginRequiredMixin, auth_views.PasswordChangeView):
+    model = get_user_model()
+    form_class = UserPasswordChangeForm
