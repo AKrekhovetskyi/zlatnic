@@ -135,7 +135,7 @@ def index(request: WSGIRequest) -> HttpResponse:
 
     context = {
         "wallets": wallets_set,
-        "current_balance": wallets_set[0][1].balance if not isinstance(wallets_set[0][1], str) else 0,
+        "current_balance": wallets_set[0][1].balance if wallets_set and not isinstance(wallets_set[0][1], str) else 0,
         "Income": income,
         "Outcome": outcome,
         "error": error,
