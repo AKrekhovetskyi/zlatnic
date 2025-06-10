@@ -1,6 +1,5 @@
 from typing import Any
 
-from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.handlers.wsgi import WSGIRequest
@@ -14,15 +13,15 @@ from users.forms import NewUserForm, UserAccountForm
 
 def register_request(request: WSGIRequest) -> HttpResponseRedirect | HttpResponse:
     """User registration function-based view."""
+    form = NewUserForm
     if request.method == "POST":
-        form = NewUserForm(request.POST)
+        form = form(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect("manager:wallets")
-        messages.error(request, "Unsuccessful registration. Invalid information.")
-    form = NewUserForm()
-    return render(request, "registration/register.html", {"form": form})
+        return render(request, "registration/register.html", {"form": form})
+    return render(request, "registration/register.html", {"form": form()})
 
 
 class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
