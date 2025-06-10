@@ -36,6 +36,12 @@ class NewUserForm(UserCreationForm):
 
 
 class UserAccountForm(UserChangeForm):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            placeholder = field_name.replace("_", " ").title()
+            field.widget.attrs.update({"class": "input_data", "placeholder": placeholder})
+
     class Meta:
         model = get_user_model()
         fields = (
