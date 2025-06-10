@@ -3,7 +3,7 @@ from typing import Any
 
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm, UserChangeForm, UserCreationForm
 
 
 class NewUserForm(UserCreationForm):
@@ -52,3 +52,14 @@ class UserAccountForm(UserChangeForm):
             "phone_number",
             "image",
         )
+
+
+class UserPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            placeholder = field_name.replace("_", " ").title()
+            placeholder = (
+                "New Password Confirmation" if placeholder == "New Password2" else re.sub(r"\d+", "", placeholder)
+            )
+            field.widget.attrs.update({"class": "input_data", "placeholder": placeholder})
