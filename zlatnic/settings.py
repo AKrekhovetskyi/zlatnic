@@ -138,7 +138,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = (BASE_DIR / "static",)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -157,8 +157,8 @@ if not DEBUG:
         "default": {"BACKEND": os.environ["DEFAULT_FILE_STORAGE"]},
         "staticfiles": {"BACKEND": os.environ["STATICFILES_STORAGE"]},
     }
-    DROPBOX_APP_KEY = os.getenv("DROPBOX_APP_KEY")
-    DROPBOX_APP_SECRET = os.getenv("DROPBOX_APP_SECRET")
-    DROPBOX_OAUTH2_TOKEN = os.getenv("DROPBOX_OAUTH2_TOKEN")
-    DROPBOX_OAUTH2_REFRESH_TOKEN = os.getenv("DROPBOX_OAUTH2_REFRESH_TOKEN")
+    DROPBOX_APP_KEY = os.environ["DROPBOX_APP_KEY"]
+    DROPBOX_APP_SECRET = os.environ["DROPBOX_APP_SECRET"]
+    DROPBOX_OAUTH2_TOKEN = os.environ["DROPBOX_OAUTH2_TOKEN"]
+    DROPBOX_OAUTH2_REFRESH_TOKEN = os.environ["DROPBOX_OAUTH2_REFRESH_TOKEN"]
     DROPBOX_ROOT_PATH = "/"
