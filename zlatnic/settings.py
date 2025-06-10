@@ -150,9 +150,15 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-DEFAULT_FILE_STORAGE = os.getenv("DEFAULT_FILE_STORAGE")
-DROPBOX_APP_KEY = os.getenv("DROPBOX_APP_KEY")
-DROPBOX_APP_SECRET = os.getenv("DROPBOX_APP_SECRET")
-DROPBOX_OAUTH2_TOKEN = os.getenv("DROPBOX_OAUTH2_TOKEN")
-DROPBOX_OAUTH2_REFRESH_TOKEN = os.getenv("DROPBOX_OAUTH2_REFRESH_TOKEN")
-DROPBOX_ROOT_PATH = "/"
+if not DEBUG:
+    # https://django-storages.readthedocs.io/en/latest/backends/dropbox.html
+    # https://www.dropbox.com/developers/documentation/python#tutorial
+    STORAGES = {
+        "default": {"BACKEND": os.environ["DEFAULT_FILE_STORAGE"]},
+        "staticfiles": {"BACKEND": os.environ["STATICFILES_STORAGE"]},
+    }
+    DROPBOX_APP_KEY = os.getenv("DROPBOX_APP_KEY")
+    DROPBOX_APP_SECRET = os.getenv("DROPBOX_APP_SECRET")
+    DROPBOX_OAUTH2_TOKEN = os.getenv("DROPBOX_OAUTH2_TOKEN")
+    DROPBOX_OAUTH2_REFRESH_TOKEN = os.getenv("DROPBOX_OAUTH2_REFRESH_TOKEN")
+    DROPBOX_ROOT_PATH = "/"
