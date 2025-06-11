@@ -47,6 +47,24 @@ cp .env.sample .env
 ./build.sh
 ```
 
+- Before running the project locally, let `uv` know which ".env" file to use by exporting the [`UV_ENV_FILE`](https://docs.astral.sh/uv/reference/environment/#uv_env_file) environment variable:
+
+```bash
+export UV_ENV_FILE=.env
+```
+
+- Install the required dependencies:
+
+```bash
+uv sync --group test
+```
+
+- Run the server:
+
+```bash
+uv run manage.py runserver
+```
+
 ### 📌 Optionally
 
 Enable "[Shell autocompletion](https://docs.astral.sh/uv/getting-started/installation/#shell-autocompletion)" for an enhanced CLI experience.
