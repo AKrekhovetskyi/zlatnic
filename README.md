@@ -1,39 +1,65 @@
-<img src="static/source/welcome_logo.png" alt="Project logo" width="200">
+<p align="center">
+    <img src="static/source/welcome_logo.png" alt="Project logo" width="200">
+</p>
 
 # ZLATNIC
 
-ZLATNIC - a platform to control personal expenses.
+**ZLATNIC** is a platform to control personal expenses.
 
-## Check it out
+## 🌐 Live Demo
 
-[Zlatnic project deployed on Render](https://zlatnic.onrender.com/)
+[🔗 Deployed on Render](https://zlatnic.onrender.com/)
+
+**Credentials for demo access:**
 
 ```
 Username: user
 Password: user12345
 ```
 
+## 📊 Database Structure
+
 The project is built on a database with the following structure:
-![image](static/source/DB_Zlatnic.png)
+![Database schema](static/source/DB_Zlatnic.png)
 
-## Installation
+## 🛠️ Prerequisites
 
-Python3 must be already installed.
+To successfully run the setup script below, your system must meet the following requirements:
 
-```shell
-git clone https://github.com/AndriyKy/zlatnic.git
+- Linux OS (tested on Debian-based distributions)
+- Python 3.9 or higher
+- `curl` CLI installed
+
+## 🚀 Project Setup (Linux)
+
+Clone the repository and configure environment variables:
+
+```bash
+git clone https://github.com/AKrekhovetskyi/zlatnic.git
 cd zlatnic
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python3 manage.py loaddata zlatnic_db_data.json
-python3 manage.py surserver   # start Django server
+cp .env.sample .env
 ```
 
-## Features
+- Open the "[.env](./.env)" file and fill in the required environment variables.
+- Run the build script:
 
-- Registration and authentication functionality for User
-- Managing different types of wallets
-- Functionality of accrual and expenditure of funds
-- Monthly and monthly detailed history of financial circulation
+```bash
+./build.sh
+```
+
+### 📌 Optionally
+
+Enable "[Shell autocompletion](https://docs.astral.sh/uv/getting-started/installation/#shell-autocompletion)" for an enhanced CLI experience.
+
+## ✨ Features
+
+- User authentication: registration, login, logout, profile updates, and profile picture management
+- Management of various wallet types (cards, cash, cryptocurrency)
+- Income funding panel with multiple source options
+- Panels with expense categories
+- Financial turnover summary for the current month
+- Detailed financial transaction history for each wallet
+- Pagination of accountancy page
+- Search functionality for transactions by income/outcome type within a wallet
 - Powerful admin panel for advanced managing
+- Fully responsive web design for seamless usage on desktop and mobile devices
