@@ -28,7 +28,7 @@ To successfully run the setup script below, your system must meet the following 
 
 - Linux OS (tested on Debian-based distributions)
 - Python 3.9 or higher
-- `curl` CLI installed
+- `curl` CLI and [`uv`](https://docs.astral.sh/uv/getting-started/installation/) installed
 
 ## 🚀 Project Setup (Linux)
 
